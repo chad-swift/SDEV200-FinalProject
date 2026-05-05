@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 public class CalorieTrackerGUI extends Application {
     // meal array list
     ArrayList<Meal> meals = new ArrayList<>();
+    ArrayList<Ingredient> ingredients = new ArrayList<>();
 
     // Section headers that also serve as means to display messages
     Text section1Header = new Text("Day Tracker");
@@ -37,7 +39,7 @@ public class CalorieTrackerGUI extends Application {
     TextArea outputArea = new TextArea();
 
     TextField ingredientNameField = new TextField();
-    Spinner<Integer> caloriesField = new Spinner<>(0, 4000, 450, 1);
+    Spinner<Integer> caloriesField = new Spinner<>(0, 4000, 50, 1);
     Spinner<Double> proteinField = new Spinner<>(0.0, 300.0, 0.0, 1);
     Spinner<Double> fatField = new Spinner<>(0.0, 300.0, 0.0, 1);
     Spinner<Double> carbField = new Spinner<>(0.0, 300.0, 0.0, 1);
@@ -301,6 +303,12 @@ public class CalorieTrackerGUI extends Application {
         // set an event for the next event, which is to create a new fast food meal
         addFastFoodMealBtn.setOnAction(e -> createNewFastFoodMeal());
 
+        addIngredientBtn.setOnAction(e -> createIngredient());
+
+        addPreparedMealBtn.setOnAction(e -> createPreparedMeal());
+
+        removeSelectedIngredientBtn.setOnAction(e -> deleteIngredient());
+
     }
 
     public void createNewFastFoodMeal() {
@@ -309,8 +317,8 @@ public class CalorieTrackerGUI extends Application {
                 mealNameField.getText().isBlank()
                 || restaurantNameField.getText().isBlank()
                 || descriptionField.getText().isBlank()
-                || servingSizeCombo.getValue().isBlank()
-                || typeOfMealCombo.getValue().isBlank()
+                || servingSizeCombo.getValue() == null
+                || typeOfMealCombo.getValue() == null
         ) {
             section2Header.setText("No Blanks Are Allowed");
             return;
@@ -323,11 +331,11 @@ public class CalorieTrackerGUI extends Application {
                 descriptionField.getText(),
                 servingSizeCombo.getValue(),
                 typeOfMealCombo.getValue(),
-                caloriesField.getValue(),
-                proteinField.getValue(),
-                fatField.getValue(),
-                carbField.getValue(),
-                fiberField.getValue()
+                totalCaloriesField.getValue(),
+                totalProteinField.getValue(),
+                totalFatField.getValue(),
+                totalCarbField.getValue(),
+                totalFiberField.getValue()
             );
             meals.add(meal);
             // add the name of the meal to the ListView so we can see what's there
@@ -335,8 +343,69 @@ public class CalorieTrackerGUI extends Application {
             // clear the meal form so the user doesn't have to manually do it if they want to add another one
             clearMealForm();
             // change the text back, just in case there was an error
-            section2Header.setText("Create new Meal");
+            section2Header.setText("Create New Meal");
 
+    }
+
+    public void createIngredient() {
+
+        if (ingredientNameField.getText().isBlank()) {
+            section3Header.setText("Ingredient Name can't be blank");
+        } else {
+            Ingredient ingredient = new Ingredient(
+                    ingredientNameField.getText(),
+                    caloriesField.getValue(),
+                    proteinField.getValue(),
+                    fatField.getValue(),
+                    carbField.getValue(),
+                    fiberField.getValue()
+            );
+
+            ingredients.add(ingredient);
+            ingredientViewList.getItems().add(ingredient.getName());
+            ingredientNameField.clear();
+        }
+
+    }
+
+    public void deleteIngredient() {
+        if (ingredients.isEmpty()) {
+            section2Header.setText("There are no ingredients to remove");
+            return;
+        }
+
+        ingredients.remove(ingredientViewList.getSelectionModel().getSelectedIndex());
+        ingredientViewList.getItems().remove(ingredientViewList.getSelectionModel().getSelectedIndex());
+    }
+
+    public void createPreparedMeal() {
+        if (ingredients.isEmpty()) {
+            section2Header.setText("Must have at least one ingredient");
+            return;
+        }
+
+        if (
+                mealNameField.getText().isBlank()
+                || servingSizeCombo.getValue() == null
+                || typeOfMealCombo.getValue() == null
+        ) {
+            section2Header.setText("No Blanks Allowed!");
+            return;
+        }
+
+
+        PreparedMeal meal = new PreparedMeal(
+                mealNameField.getText(),
+                servingSizeCombo.getValue(),
+                typeOfMealCombo.getValue(),
+                ingredients
+        );
+
+        meals.add(meal);
+        mealListView.getItems().add(meal.getName());
+        clearIngredients();
+        clearMealForm();
+        section2Header.setText("Create New Meal");
     }
 
     // method that clears the meal form
@@ -349,8 +418,10 @@ public class CalorieTrackerGUI extends Application {
 
     }
 
-    // method that cleas the ingredients form
-    public void clearIngredientsForm() {
+    // method that clears the ingredients
+    public void clearIngredients() {
+        ingredients.clear();
         ingredientNameField.clear();
+        ingredientViewList.getItems().clear();
     }
 }
