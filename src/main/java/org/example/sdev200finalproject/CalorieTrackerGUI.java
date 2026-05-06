@@ -170,7 +170,7 @@ public class CalorieTrackerGUI extends Application {
         section1Grid.add(outputArea, 1, 5, 3, 1);
 
         // add choices to the combo boxes
-        typeOfMealCombo.getItems().addAll("Breakfast", "Lunch", "Dinner");
+        typeOfMealCombo.getItems().addAll("Breakfast", "Lunch", "Dinner", "Snack", "Dessert");
         servingSizeCombo.getItems().addAll("Small", "Medium", "Large");
 
         // set the spacing to the main vbox
@@ -535,14 +535,19 @@ public class CalorieTrackerGUI extends Application {
         // We need to convert the LocalDate into a java.utils.Date, which is the reason to import the java.sql.Date class
         DayOfMeals day = new DayOfMeals(java.sql.Date.valueOf(dateField.getValue()), meals, calorieLimitField.getValue());
 
-        // this converts the meal list view to a string array, this seemed easy since they're already strings based on the name
-        String[] mealsConsumed = mealListView.getItems().toArray(new String[0]);
+        // create empty array list
+        ArrayList<String> mealStrings = new ArrayList<>();
+
+        // run the toString method on each meal, add it to the list
+        for (Meal meal : meals) {
+            mealStrings.add(meal.toString());
+        }
 
         // set output with all the calculations
         outputArea.setText(
                 "Today is " + day.getDayOfWeek() + "\n" +
                 "Calorie Limit is set at " + calorieLimitField.getValue() + "\n" +
-                "Meals eaten today: \n\t" + String.join("\n\t", mealsConsumed) + "\n" +
+                "Meals eaten today: \n\t" + String.join("\n\t", mealStrings) + "\n" +
                 "The total amount of calories consumed is " + day.getTotalCalories() + "\n" +
                 "The total amount of protein consumed is " + day.getTotalProtein() + "\n" +
                 "The total amount of carbohydrates consumed is " + day.getTotalCarbs() + "\n" +
