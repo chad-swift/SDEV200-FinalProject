@@ -419,6 +419,13 @@ public class CalorieTrackerGUI extends Application {
             return;
         }
 
+        // if the selected index of the ingredient list view is -1, then there are meals but nothing is selected
+        // this would throw an exception if this line is missing
+        if (ingredientViewList.getSelectionModel().getSelectedIndex() == -1) {
+            section2Header.setText("No Ingredient is Selected");
+            return;
+        }
+
         // remove the ingredients from the list and the list view based on the returned index from the selection model
         ingredients.remove(ingredientViewList.getSelectionModel().getSelectedIndex());
         ingredientViewList.getItems().remove(ingredientViewList.getSelectionModel().getSelectedIndex());
@@ -431,6 +438,13 @@ public class CalorieTrackerGUI extends Application {
         // if the meals list is empty, do nothing, return early, set message
         if (meals.isEmpty()) {
             section1Header.setText("There are no meals to remove");
+            return;
+        }
+
+        // if the meals list selected index is -1, there are meals but there's nothing selected
+        // this would throw an exception if this line is missing
+        if (mealListView.getSelectionModel().getSelectedIndex() == -1) {
+            section1Header.setText("No meal selected");
             return;
         }
 
