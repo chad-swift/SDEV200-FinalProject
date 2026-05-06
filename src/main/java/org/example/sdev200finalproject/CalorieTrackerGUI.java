@@ -429,6 +429,7 @@ public class CalorieTrackerGUI extends Application {
         // remove the ingredients from the list and the list view based on the returned index from the selection model
         ingredients.remove(ingredientViewList.getSelectionModel().getSelectedIndex());
         ingredientViewList.getItems().remove(ingredientViewList.getSelectionModel().getSelectedIndex());
+        section2Header.setText("Create New Meal");
     }
 
     /**
@@ -451,6 +452,7 @@ public class CalorieTrackerGUI extends Application {
         // remove the meal from the list and the listview based on the returned index from the selection model
         meals.remove(mealListView.getSelectionModel().getSelectedIndex());
         mealListView.getItems().remove(mealListView.getSelectionModel().getSelectedIndex());
+        section1Header.setText("Day Tracker");
     }
 
     /**
