@@ -379,6 +379,7 @@ public class CalorieTrackerGUI extends Application {
             clearMealForm();
             // change the text back, just in case there was an error
             section2Header.setText("Create New Meal");
+            section1Header.setText("Day Tracker");
 
     }
 
@@ -484,7 +485,7 @@ public class CalorieTrackerGUI extends Application {
                 ingredients
         );
 
-        // add meal to list and viewlist
+        // add meal to list and view list
         meals.add(meal);
         mealListView.getItems().add(meal.getName());
         // clear ingredients
@@ -492,6 +493,7 @@ public class CalorieTrackerGUI extends Application {
         // clear meal form
         clearMealForm();
         section2Header.setText("Create New Meal");
+        section1Header.setText("Day Tracker");
     }
 
     /**
@@ -559,6 +561,7 @@ public class CalorieTrackerGUI extends Application {
                         ? "Yes! Calories remaining is " + day.getRemainingCalories()
                         : "No. Calorie deficit is " + day.getRemainingCalories())
         );
+        section1Header.setText("Output Updated!");
 
     }
 }
