@@ -106,6 +106,8 @@ public class CalorieTrackerGUI extends Application {
         fiberField.setEditable(true);
         outputArea.setPrefWidth(380);
 
+        dateField.setEditable(false);
+
 
         totalCaloriesField.setEditable(true);
         totalProteinField.setEditable(true);
