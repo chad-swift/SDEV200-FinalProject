@@ -116,6 +116,7 @@ public class DayOfMeals implements NutritionCalculable {
      */
     public String getDayOfWeek() {
         GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
 
         ZonedDateTime zdt = calendar.toZonedDateTime();
 
