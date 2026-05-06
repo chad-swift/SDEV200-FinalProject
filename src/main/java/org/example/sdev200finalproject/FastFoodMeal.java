@@ -101,4 +101,9 @@ public class FastFoodMeal extends Meal {
     public double getTotalFiber() {
         return fiberTotal;
     }
+
+    @Override
+    public String toString() {
+        return this.name + " from a " + this.restaurantName + " establishment that was " + this.servingSize.toLowerCase() + " meal, as " + this.mealType.toLowerCase();
+    }
 }
