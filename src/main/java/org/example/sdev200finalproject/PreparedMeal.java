@@ -89,4 +89,8 @@ public class PreparedMeal extends Meal {
         }
         return total;
     }
+    @Override
+    public String toString() {
+        return this.name + " that was prepared and was a " + this.servingSize.toLowerCase() + " meal, as " + this.mealType.toLowerCase();
+    }
 }
