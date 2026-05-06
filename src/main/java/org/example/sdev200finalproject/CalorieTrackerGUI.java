@@ -12,8 +12,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.function.UnaryOperator;
 
 
 // Chad Swift
@@ -82,6 +86,19 @@ public class CalorieTrackerGUI extends Application {
         outputArea.setEditable(false);
         mealListView.setMaxWidth(380);
 
+        // this sets up a restriction for the spinboxes so that ONLY digit characters are allowed
+        NumberFormat format = NumberFormat.getIntegerInstance();
+        UnaryOperator<TextFormatter.Change> filter = c -> {
+            if (c.isContentChange()) {
+                ParsePosition parsePosition = new ParsePosition(0);
+                format.parse(c.getControlNewText(), parsePosition);
+                if (parsePosition.getIndex() == 0 || parsePosition.getIndex() < c.getControlNewText().length()) {
+                    return null;
+                }
+            }
+            return c;
+        };
+
         caloriesField.setEditable(true);
         proteinField.setEditable(true);
         fatField.setEditable(true);
@@ -89,11 +106,25 @@ public class CalorieTrackerGUI extends Application {
         fiberField.setEditable(true);
         outputArea.setPrefWidth(380);
 
+
         totalCaloriesField.setEditable(true);
         totalProteinField.setEditable(true);
         totalFatField.setEditable(true);
         totalCarbField.setEditable(true);
         totalFiberField.setEditable(true);
+
+        // this sets formatters for each of the numeric spinboxes utilizing the filter, after they've been set to editable
+        caloriesField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+        proteinField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+        fatField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+        carbField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+        fiberField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+
+        totalCaloriesField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+        totalProteinField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+        totalFatField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+        totalCarbField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
+        totalFiberField.getEditor().setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0, filter));
 
         section1Grid.setPadding(PADDING);
         section1Grid.setHgap(SPACING);
@@ -306,6 +337,7 @@ public class CalorieTrackerGUI extends Application {
         removeSelectedIngredientBtn.setOnAction(e -> deleteIngredient());
         removeSelectedBtn.setOnAction(e -> deleteMeal());
         calculateAndGenerateOutputBtn.setOnAction(e -> runDayReport());
+
     }
 
     /**
