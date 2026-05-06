@@ -99,6 +99,7 @@ public class CalorieTrackerGUI extends Application {
             return c;
         };
 
+        // set spinboxes to be editable
         caloriesField.setEditable(true);
         proteinField.setEditable(true);
         fatField.setEditable(true);
@@ -106,9 +107,10 @@ public class CalorieTrackerGUI extends Application {
         fiberField.setEditable(true);
         outputArea.setPrefWidth(380);
 
+        // set date to be not editable, to prevent exceptions
         dateField.setEditable(false);
 
-
+        // set spinboxes to be editable
         totalCaloriesField.setEditable(true);
         totalProteinField.setEditable(true);
         totalFatField.setEditable(true);
