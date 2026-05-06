@@ -299,20 +299,18 @@ public class CalorieTrackerGUI extends Application {
             }
         });
 
-        // set an event for the next event, which is to create new fast food meal
+        // events
         addFastFoodMealBtn.setOnAction(e -> createNewFastFoodMeal());
-
         addIngredientBtn.setOnAction(e -> createIngredient());
-
         addPreparedMealBtn.setOnAction(e -> createPreparedMeal());
-
         removeSelectedIngredientBtn.setOnAction(e -> deleteIngredient());
-
         removeSelectedBtn.setOnAction(e -> deleteMeal());
-
         calculateAndGenerateOutputBtn.setOnAction(e -> runDayReport());
     }
 
+    /**
+     * method that creates a new fast food and adds it to the meals list
+     */
     public void createNewFastFoodMeal() {
         //  any of the fields are blank, we want to show an error
         if (
@@ -348,48 +346,68 @@ public class CalorieTrackerGUI extends Application {
 
     }
 
+    /**
+     * method that creates an ingredient and adds it to the ingredients list
+     */
     public void createIngredient() {
 
+        // if the name is blank, do nothing, set message, return early
         if (ingredientNameField.getText().isBlank()) {
             section3Header.setText("Ingredient Name can't be blank");
-        } else {
-            Ingredient ingredient = new Ingredient(
-                    ingredientNameField.getText(),
-                    caloriesField.getValue(),
-                    proteinField.getValue(),
-                    fatField.getValue(),
-                    carbField.getValue(),
-                    fiberField.getValue()
-            );
-
-            ingredients.add(ingredient);
-            ingredientViewList.getItems().add(ingredient.getName());
-            ingredientNameField.clear();
+            return;
         }
 
+        // create new ingredient using class
+        Ingredient ingredient = new Ingredient(
+                ingredientNameField.getText(),
+                caloriesField.getValue(),
+                proteinField.getValue(),
+                fatField.getValue(),
+                carbField.getValue(),
+                fiberField.getValue()
+            );
+
+        // add ingredient to main list, listview, and then clear the ingredients form
+        ingredients.add(ingredient);
+        ingredientViewList.getItems().add(ingredient.getName());
+        ingredientNameField.clear();
     }
 
+    /**
+     * Method that deletes the selected ingredient from list
+     */
     public void deleteIngredient() {
+        // if ingredient list is empty, do nothing, return early
         if (ingredients.isEmpty()) {
             section2Header.setText("There are no ingredients to remove");
             return;
         }
 
+        // remove the ingredients from the list and the list view based on the returned index from the selection model
         ingredients.remove(ingredientViewList.getSelectionModel().getSelectedIndex());
         ingredientViewList.getItems().remove(ingredientViewList.getSelectionModel().getSelectedIndex());
     }
 
+    /**
+     * Method that deletes a meal from the list
+     */
     public void deleteMeal() {
+        // if the meals list is empty, do nothing, return early, set message
         if (meals.isEmpty()) {
             section1Header.setText("There are no meals to remove");
             return;
         }
 
+        // remove the meal from the list and the listview based on the returned index from the selection model
         meals.remove(mealListView.getSelectionModel().getSelectedIndex());
         mealListView.getItems().remove(mealListView.getSelectionModel().getSelectedIndex());
     }
 
+    /**
+     * Method that creates a PreparedMeal and adds it to the Meals list
+     */
     public void createPreparedMeal() {
+        // if the ingredients list is empty, do nothing, return early, set message
         if (ingredients.isEmpty()) {
             section2Header.setText("Must have at least one ingredient");
             return;
@@ -419,7 +437,9 @@ public class CalorieTrackerGUI extends Application {
         section2Header.setText("Create New Meal");
     }
 
-    // method that clears the meal form
+    /**
+     * method that clears the meal form
+     */
     public void clearMealForm() {
         mealNameField.clear();
         servingSizeCombo.setValue(null);
@@ -429,28 +449,38 @@ public class CalorieTrackerGUI extends Application {
 
     }
 
-    // method that clears the ingredients
+    /**
+     * method that clears the ingredients
+     */
     public void clearIngredients() {
         ingredients.clear();
         ingredientNameField.clear();
         ingredientViewList.getItems().clear();
     }
 
+    /**
+     * Method that collects all the nutritional info for all meals in the list and delivers an output in the output field
+     */
     public void runDayReport() {
+        // if there are no meals, we need to set the message and return early
         if (meals.isEmpty()) {
             section1Header.setText("There are no meals");
             return;
         }
 
+        // if the date is null, we need to set the message and return early
         if (dateField.getValue() == null) {
             section1Header.setText("The date cannot be blank!");
             return;
         }
 
+        // create a new day using class
         DayOfMeals day = new DayOfMeals(java.sql.Date.valueOf(dateField.getValue()), meals, calorieLimitField.getValue());
 
+        // this converts the meal list view to a string array, this seemed easy since they're already strings based on the name
         String[] mealsConsumed = mealListView.getItems().toArray(new String[0]);
 
+        // set output with all the calculations
         outputArea.setText(
                 "Today is " + day.getDayOfWeek() + "\n" +
                 "Calorie Limit is set at " + calorieLimitField.getValue() + "\n" +
