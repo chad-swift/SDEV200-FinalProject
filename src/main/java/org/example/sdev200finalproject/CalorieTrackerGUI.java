@@ -12,7 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 
@@ -32,7 +31,7 @@ public class CalorieTrackerGUI extends Application {
     Text section2Header = new Text("Create New Meal");
     Text section3Header = new Text("Add Ingredients");
 
-    // datafields that link to fields for the classes;
+    // data fields that link to fields for the classes;
     DatePicker dateField = new DatePicker();
     Spinner<Integer> calorieLimitField = new Spinner<>(500, 4000, 2000, 100);
     ListView<String> mealListView = new ListView<>();
@@ -70,7 +69,7 @@ public class CalorieTrackerGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        // new hbox
+        // new horizontal box
         HBox pane = new HBox();
 
         VBox section1 = new VBox();
@@ -135,7 +134,7 @@ public class CalorieTrackerGUI extends Application {
         section1Grid.add(outputLabel, 0, 5);
         section1Grid.add(outputArea, 1, 5, 3, 1);
 
-        // add choices to the comboboxes
+        // add choices to the combo boxes
         typeOfMealCombo.getItems().addAll("Breakfast", "Lunch", "Dinner");
         servingSizeCombo.getItems().addAll("Small", "Medium", "Large");
 
@@ -184,11 +183,11 @@ public class CalorieTrackerGUI extends Application {
         Label totalFiberLabel = new Label("Total Fiber");
         Button addFastFoodMealBtn = new Button("Add Fast Food Meal to Meal List");
 
-        // add the fast food meal button to an box so I can center it
+        // add the fast food meal button to a box so I can center it
         HBox addFastFoodBox = new HBox(addFastFoodMealBtn);
         addFastFoodBox.setAlignment(Pos.CENTER);
 
-        // add the relevant fields to the fastfood meal section
+        // add the relevant fields to the fast food meal section
         fastFoodMealGrid.addRow(0, restaurauntLabel, restaurantNameField);
         fastFoodMealGrid.addRow(1, descriptionLabel, descriptionField);
         fastFoodMealGrid.addRow(2, totalCaloriesLabel, totalCaloriesField);
@@ -213,7 +212,7 @@ public class CalorieTrackerGUI extends Application {
 
         ingredientViewList.setPrefWidth(200);
 
-        // add all of the parts to section 2, starting with the fast food bit enabled first
+        // add all the parts to section 2, starting with the fast food bit enabled first
         section2.getChildren().addAll(section2HeaderBox, topPartGrid, fastFoodMealGrid, addFastFoodBox);
 
         // create section 3 and adjust settings
@@ -236,7 +235,7 @@ public class CalorieTrackerGUI extends Application {
         HBox section3HeadBox = new HBox(section3Header);
         section3HeadBox.setAlignment(Pos.CENTER);
 
-        // add all of the fields and labels to the ingredients section
+        // add all the fields and labels to the ingredients section
         section3Grid.addRow(0, IngredientNameLabel, ingredientNameField);
         section3Grid.addRow(1, caloriesLabel, caloriesField);
         section3Grid.addRow(2, proteinLabel, proteinField);
@@ -250,7 +249,7 @@ public class CalorieTrackerGUI extends Application {
         HBox ingredientBtnBox = new HBox(addIngredientBtn);
         ingredientBtnBox.setAlignment(Pos.CENTER);
 
-        // add all of the parts of the third section to the box
+        // add all the parts of the third section to the box
         section3.getChildren().addAll(section3HeadBox, section3Grid, ingredientBtnBox);
 
         // separator between sections 1 and 2
@@ -259,7 +258,7 @@ public class CalorieTrackerGUI extends Application {
         // make it vertical
         separator.setOrientation(Orientation.VERTICAL);
 
-        // add the first section, the second section, and the separator to the final hbox pane
+        // add the first section, the second section, and the separator to the final horizontal box pane
         pane.getChildren().addAll(section1, separator, section2);
 
         // numbers to set these just in case we use them multiple places
@@ -282,14 +281,14 @@ public class CalorieTrackerGUI extends Application {
             if (isFastFood.isSelected()) {
                 // take all the prepared meal stuff out
                 section2.getChildren().removeAll(preparedMealGrid, addPreparedBox);
-                // add in all the fast food stuff
+                // add in all the fast foodstuff
                 section2.getChildren().addAll(fastFoodMealGrid, addFastFoodBox);
                 // we don't need section 3 regarding ingredients
                 pane.getChildren().remove(section3);
                 // change the size of the stage
                 primaryStage.setWidth(MIN_SCENE_WIDTH);
             } else {
-                // take all the fast food stuff out
+                // take all the fast foodstuff out
                 section2.getChildren().removeAll(fastFoodMealGrid, addFastFoodBox);
                 // add in the prepared meal stuff
                 section2.getChildren().addAll(preparedMealGrid, addPreparedBox);
@@ -300,7 +299,7 @@ public class CalorieTrackerGUI extends Application {
             }
         });
 
-        // set an event for the next event, which is to create a new fast food meal
+        // set an event for the next event, which is to create new fast food meal
         addFastFoodMealBtn.setOnAction(e -> createNewFastFoodMeal());
 
         addIngredientBtn.setOnAction(e -> createIngredient());
@@ -309,6 +308,9 @@ public class CalorieTrackerGUI extends Application {
 
         removeSelectedIngredientBtn.setOnAction(e -> deleteIngredient());
 
+        removeSelectedBtn.setOnAction(e -> deleteMeal());
+
+        calculateAndGenerateOutputBtn.setOnAction(e -> runDayReport());
     }
 
     public void createNewFastFoodMeal() {
@@ -316,7 +318,6 @@ public class CalorieTrackerGUI extends Application {
         if (
                 mealNameField.getText().isBlank()
                 || restaurantNameField.getText().isBlank()
-                || descriptionField.getText().isBlank()
                 || servingSizeCombo.getValue() == null
                 || typeOfMealCombo.getValue() == null
         ) {
@@ -378,6 +379,16 @@ public class CalorieTrackerGUI extends Application {
         ingredientViewList.getItems().remove(ingredientViewList.getSelectionModel().getSelectedIndex());
     }
 
+    public void deleteMeal() {
+        if (meals.isEmpty()) {
+            section1Header.setText("There are no meals to remove");
+            return;
+        }
+
+        meals.remove(mealListView.getSelectionModel().getSelectedIndex());
+        mealListView.getItems().remove(mealListView.getSelectionModel().getSelectedIndex());
+    }
+
     public void createPreparedMeal() {
         if (ingredients.isEmpty()) {
             section2Header.setText("Must have at least one ingredient");
@@ -423,5 +434,36 @@ public class CalorieTrackerGUI extends Application {
         ingredients.clear();
         ingredientNameField.clear();
         ingredientViewList.getItems().clear();
+    }
+
+    public void runDayReport() {
+        if (meals.isEmpty()) {
+            section1Header.setText("There are no meals");
+            return;
+        }
+
+        if (dateField.getValue() == null) {
+            section1Header.setText("The date cannot be blank!");
+            return;
+        }
+
+        DayOfMeals day = new DayOfMeals(java.sql.Date.valueOf(dateField.getValue()), meals, calorieLimitField.getValue());
+
+        String[] mealsConsumed = mealListView.getItems().toArray(new String[0]);
+
+        outputArea.setText(
+                "Today is " + day.getDayOfWeek() + "\n" +
+                "Calorie Limit is set at " + calorieLimitField.getValue() + "\n" +
+                "Meals eaten today: \n\t" + String.join("\n\t", mealsConsumed) + "\n" +
+                "The total amount of calories consumed is " + day.getTotalCalories() + "\n" +
+                "The total amount of protein consumed is " + day.getTotalProtein() + "\n" +
+                "The total amount of carbohydrates consumed is " + day.getTotalCarbs() + "\n" +
+                "The total amount of fat consumed is " + day.getTotalFat() + "\n" +
+                "The total amount of fiber consumed is " + day.getTotalFiber() + "\n" +
+                "Under Calories? " + (day.isOverCalorieLimit()
+                        ? "Yes! Calories remaining is " + day.getRemainingCalories()
+                        : "No. Calorie deficit is " + day.getRemainingCalories())
+        );
+
     }
 }
