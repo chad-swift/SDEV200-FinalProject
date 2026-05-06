@@ -449,6 +449,7 @@ public class CalorieTrackerGUI extends Application {
             return;
         }
 
+        // if fields are blank, set message, return early
         if (
                 mealNameField.getText().isBlank()
                 || servingSizeCombo.getValue() == null
@@ -459,6 +460,7 @@ public class CalorieTrackerGUI extends Application {
         }
 
 
+        // create new prepared meal using class
         PreparedMeal meal = new PreparedMeal(
                 mealNameField.getText(),
                 servingSizeCombo.getValue(),
@@ -466,9 +468,12 @@ public class CalorieTrackerGUI extends Application {
                 ingredients
         );
 
+        // add meal to list and viewlist
         meals.add(meal);
         mealListView.getItems().add(meal.getName());
+        // clear ingredients
         clearIngredients();
+        // clear meal form
         clearMealForm();
         section2Header.setText("Create New Meal");
     }
@@ -489,6 +494,8 @@ public class CalorieTrackerGUI extends Application {
      * method that clears the ingredients
      */
     public void clearIngredients() {
+        // note that this clears both the ingredients main list and the listview.
+        // we don't want to leave ingredients in here accidentally for the next meal
         ingredients.clear();
         ingredientNameField.clear();
         ingredientViewList.getItems().clear();
@@ -511,6 +518,7 @@ public class CalorieTrackerGUI extends Application {
         }
 
         // create a new day using class
+        // We need to convert the LocalDate into a java.utils.Date, which is the reason to import the java.sql.Date class
         DayOfMeals day = new DayOfMeals(java.sql.Date.valueOf(dateField.getValue()), meals, calorieLimitField.getValue());
 
         // this converts the meal list view to a string array, this seemed easy since they're already strings based on the name
